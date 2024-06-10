@@ -1,19 +1,42 @@
 // Son las funciones de las rutas
 const {response} = require('express')
+const Usuario = require('../models/Usuario.js')
 
-const crearUsuario =  (req, res=response) => {
+const crearUsuario =  async(req, res=response) => {
 
 
     const {name, email, password} = req.body;
 
+    try{
 
-    res.status(201).json({
-        "ok":true,
-        msg: 'registro',
-        name,
-        email,
-        password
-    })
+        let usuario = await Usuario.findOne({email})
+
+        if(usuario){
+            return res.status(400).json({
+                ok:false,
+                msg: 'Un usuario existe con ese correo'
+            })
+        }
+        
+        usuario = new Usuario(req.body)
+
+        await usuario.save()
+
+        res.status(201).json({
+            "ok":true,
+            uid: usuario.id,
+            name: usuario.name
+        })
+
+    }catch(error){
+        console.log(error)
+        return res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        })
+    }
+
+
 }
 
 const loginUsuario = (req, res=response) => {
