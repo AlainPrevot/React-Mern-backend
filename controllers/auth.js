@@ -1,5 +1,6 @@
 // Son las funciones de las rutas
 const {response} = require('express')
+const bcrypt = require('bcryptjs')
 const Usuario = require('../models/Usuario.js')
 
 const crearUsuario =  async(req, res=response) => {
@@ -20,6 +21,10 @@ const crearUsuario =  async(req, res=response) => {
         
         usuario = new Usuario(req.body)
 
+        //Encriptar contraseña
+        const salt = bcrypt.genSaltSync();
+        usuario.password = bcrypt.hashSync(password, salt);
+
         await usuario.save()
 
         res.status(201).json({
@@ -39,18 +44,47 @@ const crearUsuario =  async(req, res=response) => {
 
 }
 
-const loginUsuario = (req, res=response) => {
+const loginUsuario =async(req, res=response) => {
 
     const {email, password} = req.body;
 
+    try{
+        const usuario = await Usuario.findOne({email})
+
+        if(!usuario){
+            return res.status(400).json({
+                ok:false,
+                msg: 'El usuario no existe con ese correo'
+            })
+        }
+
+        //Confirmar los passwords
+        const validPassword = bcrypt.compareSync(password, usuario.password)
+        if(!validPassword){
+            return res.status(400).json({
+                ok:false,
+                msg: 'Password Incorrecto'
+            })
+        }
+
+        //Generar Token
+
+        res.json({
+            "ok":true,
+            uid: usuario.id,
+            name: usuario.name
+        })
 
 
-    res.json({
-        "ok":true,
-        msg: 'login',
-        email,
-        password
-    })
+
+    }catch(error){
+        console.log(error)
+        return res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        })
+    }
+
 }
 
 const revalidarToken =  (req, res=response) => {
