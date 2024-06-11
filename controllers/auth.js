@@ -32,7 +32,7 @@ const crearUsuario =  async(req, res=response) => {
         const token = await generarJWT(usuario.id, usuario.name)
 
         res.status(201).json({
-            "ok":true,
+            ok:true,
             uid: usuario.id,
             name: usuario.name,
             token
@@ -76,7 +76,7 @@ const loginUsuario =async(req, res=response) => {
         const token = await generarJWT(usuario.id, usuario.name)
 
         res.json({
-            "ok":true,
+            ok:true,
             uid: usuario.id,
             name: usuario.name,
             token
@@ -100,7 +100,7 @@ const revalidarToken = async (req, res=response) => {
     const token = await generarJWT(uid, name)
 
     res.json({
-        "ok":true,
+        ok:true,
         token
     })
 }
