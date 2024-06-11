@@ -1,20 +1,14 @@
-const {Schema, model} = require('mongoose')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-const UsuariosSchema = Schema({
-    name:{
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password:{
-        type: String,
-        required: true
-    }
+    <link rel="stylesheet" href="./styles.css">
 
-})
-
-module.exports = model('Usuario', UsuariosSchema)
+    <title>Demo app</title>
+</head>
+<body>
+    <h1>Bloqueado</h1>
+</body>
+</html>
